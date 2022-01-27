@@ -1,0 +1,51 @@
+* {
+  margin: 0;
+  color:rgb(75, 73, 73);
+  font-family: 'Space Mono', monospace;
+}
+
+input:focus, textarea:focus, select:focus,.btn:focus {
+  outline: none;
+  box-shadow: none;
+}
+
+.title {
+  font-size: 40px;
+
+}
+.inputBorder {
+  border: 0;
+  border-bottom: 2px solid rgb(182, 56, 77);
+  width: 100%;
+}
+
+.customBtn {
+  margin-top: 20px;
+  background: linear-gradient(
+    to right,
+    rgb(129, 15, 34) 0%,
+    rgb(182, 56, 77) 50%
+  );
+ 
+  color:white;
+  
+  margin-bottom: 20px;
+}
+.customBtn:hover {
+  color: #eee;
+}
+.googlebtn,.fbBtn {
+  width:100%;
+  background-color: #fdfcfc;
+  border:0.5px solid #eee;
+  margin:5px;
+}
+.googlebtn:hover,.fbBtn:hover{
+  transition: 0.5s ease-in-out;
+    transform: scale(1.1);
+    border:0.5px solid rgb(177, 176, 176);
+}
+
+.iconimg {
+  margin-right: 20px;
+}
