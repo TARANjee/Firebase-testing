@@ -3,11 +3,14 @@
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.4/firebase-app.js";
 import { getDatabase, ref, set, onValue, update, remove } from "https://www.gstatic.com/firebasejs/9.6.4/firebase-database.js";
-import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/9.6.4/firebase-auth.js";
+import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, FacebookAuthProvider, linkWithPopup, signOut, GoogleAuthProvider, signInWithPopup } from "https://www.gstatic.com/firebasejs/9.6.4/firebase-auth.js";
+
 const registerBtn = document.querySelector('.registerBtn');
 const signoutBtn = document.querySelector('#signout');
 const loginBtn = document.querySelector('.loginBtn');
-
+const googlebtn = document.querySelector('.googlebtn');
+const fbBtn = document.querySelector('.fbBtn');
+const defaultImgUrl='https://e7.pngegg.com/pngimages/1004/160/png-clipart-computer-icons-user-profile-social-web-others-blue-social-media.png';
 
 
 var firebaseConfig = {
@@ -30,14 +33,13 @@ var firebaseConfig = {
 };
 const app = initializeApp(firebaseConfig);
 const database = getDatabase(app);
-const auth = getAuth(app)
-
+const auth = getAuth(app);
 
 
 //------------------------ Ready Data -----------------------------
 
 let username, email, password;
-
+let user={};
 
 //------------------------ Insert Data In Firebase -----------------------------
 if (loginBtn !== null) {
@@ -51,16 +53,15 @@ if (loginBtn !== null) {
             return;
         }
 
-
         await signInWithEmailAndPassword(auth, email, password)
             .then((userCredential) => {
                 const user = userCredential.user;
-                 update(ref(database, 'user/' + user.uid), {
+                update(ref(database, 'user/' + user.uid), {
                     last_login: Date.now()
                 });
 
                 alert('user is loggedin!!');
-               
+
             })
             .catch((error) => {
                 var errorCode = error.code;
@@ -87,15 +88,17 @@ if (registerBtn !== null) {
 
         await createUserWithEmailAndPassword(auth, email, password)
             .then((userCredential) => {
-                const user = userCredential.user;
-                
-                 set(ref(database, 'user/' + user.uid),{
+                user = userCredential.user;
+
+                set(ref(database, 'user/' + user.uid), {
                     username: username,
-                    email: email
+                    email: email,
+                    userCreatedAt:Date.now(),
+                    photoURL:defaultImgUrl
                 });
 
                 alert('user is created!!');
-                
+
             })
             .catch((error) => {
                 var errorCode = error.code;
@@ -110,7 +113,7 @@ if (signoutBtn !== null) {
         signOut(auth)
             .then(() => {
                 alert("signout successfully");
-               
+
             })
             .catch((error) => {
                 var errorCode = error.code;
@@ -120,6 +123,64 @@ if (signoutBtn !== null) {
             })
     });
 }
+const signWithGoogle = async () => {
+    console.log("google")
+    const previousUser = auth.currentUser;
+    const provider = new GoogleAuthProvider(auth);
+    // if (previousUser) {
+    //     await linkWithPopup(previousUser, provider)
+    //     .then((res) => {
+    //         const secondAccountCred = res.user;
+
+    //         console.log(secondAccountCred)
+
+    //     }).catch((error) => {
+    //         alert(error)
+    //     })
+    // } else {
+        await signInWithPopup(auth, provider)
+            .then((res) => {
+                set(ref(database, 'user/' + res.user.uid), {
+                    username: res.user.displayName,
+                    email: res.user.email,
+                    photoURL: res.user.photoURL
+                });
+            }).catch((error) => {
+                alert(error)
+            })
+    // }
+}
+const signWithFb = async () => {
+    console.log("fb")
+    const previousUser = auth.currentUser;
+    const provider = new FacebookAuthProvider(auth);
+    // if (previousUser) {
+    //     await linkWithPopup(previousUser, provider)
+    //         .then((res) => {
+    //             const secondAccountCred = res.user;
+
+    //             console.log(secondAccountCred)
+
+    //         }).catch((error) => {
+    //             alert(error)
+    //         })
+    // } else {
+        await signInWithPopup(auth, provider)
+            .then((res) => {
+                console.log(res.user)
+            }).catch((error) => {
+                alert(error)
+            })
+    // }
+}
+if(googlebtn !== null)
+googlebtn.addEventListener('click', signWithGoogle);
+if(fbBtn !== null)
+fbBtn.addEventListener('click', signWithFb);
+
+
+
+
 // Validation
 function validate_email(email) {
     const regex = "/^[a-zA-Z0-9.! #$%&'*+/=? ^_`{|}~-]+@[a-zA-Z0-9-]+(?:\. [a-zA-Z0-9-]+)*$/";
@@ -151,35 +212,16 @@ function validate_field(field) {
 
 //------------------------ Select Process -----------------------------
 
-// document.getElementById('continue').onclick = () => {
-//     Ready();
-//     const selectData = ref(database, 'user/' + username);
-//     onValue(selectData, (snapshot) => {
-//         const data = snapshot.val(); // data = all data on firebase
-//         document.getElementById('password').value = data.password;
-//     })
+document.getElementById('account').onclick = () => {
+    console.log(user)
+    const selectData = ref(database, 'user/' + user.uid);
+    onValue(selectData, (snapshot) => {
+        const data = snapshot.val(); // data = all data on firebase
+        console.log(data)
+    })
 
-// }
+}
 
-//------------------------ Update Process -----------------------------
-
-// document.getElementById('continue').onclick = () => {
-
-//     const postData = {
-//         username: username,
-//         password: ps,
-//     };
-
-//     //   Get a key for a new Post.
-//     //   const newPostKey = push(child(ref(db), 'posts')).key;
-
-//     // Write the new post's data simultaneously in the posts list and the user's post list.
-//     const updates = {};
-//     updates['user/' + username] = postData;
-
-//     return update(ref(database), updates);
-//     alert('updated')
-// }
 
 //------------------------ Delete Process -----------------------------
 

@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>HOME | QPN</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css"
+    />
+   
+  </head>
+
+  <body class="grey lighten-3">
+    <nav class="z-depth-0 grey lighten-4">
+      <div class="nav-wrapper container">
+        <a href="#!" class="brand-logo #f06292 pink lighten-2">Logo</a>
+
+        <ul id="nav-mobile" class="right hide-on-med-and-down">
+          <li class="logged-in">
+            <a
+              href="#"
+              id="account"
+              class="grey-text modal-trigger"
+              data-target="modal-account"
+              >Account</a
+            >
+          </li>
+          <li class="logged-in" id="logout">
+            <a href="#" class="grey-text">Logout</a>
+          </li>
+          <li class="logged-in">
+            <a
+              href="#"
+              class="grey-text modal-trigger"
+              data-target="modal-create"
+              >Create Guide</a
+            >
+          </li>
+          <li class="logged-in">
+            <a
+              href="login.htm"
+              class="grey-text modal-trigger"
+              data-target="modal-login"
+              >Login</a
+            >
+          </li>
+          <li class="logged-in">
+            <a
+              href="register.htm"
+              class="grey-text modal-trigger"
+              data-target="modal-signup"
+              >Sign up</a
+            >
+          </li>
+        </ul>
+      </div>
+    </nav>
+
+    <div id="modal-account" class="modal">
+      <div class="modal-content">
+        <h4>Account</h4>
+        <div class="col s12 m8 offset-m2 l6 offset-l3">
+          <div class="card-panel grey lighten-5 z-depth-1">
+            <div class="row valign-wrapper">
+              <div class="col s2">
+                <img src="img/icons8-user-64.png" alt="" class="circle responsive-img"> <!-- notice the "circle" class -->
+              </div>
+              <div class="col s10">
+                <span class="black-text">
+                  <div class='valign-wrapper'>Username:<p id='username'>Taranjeet</p> </div>
+                  <div class='valign-wrapper'>Email:<p id='email'>Taranjeet@gmail.com</p> </div>
+                </span>
+              </div>
+            </div>
+          </div>
+      </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+
+    <script type="module" src="auth.js"></script>
+    <script src="index.js"></script>
+  </body>
+</html>

@@ -37,13 +37,11 @@ input:focus, textarea:focus, select:focus,.btn:focus {
 .googlebtn,.fbBtn {
   width:100%;
   background-color: #fdfcfc;
-  border:0.5px solid #eee;
+  border:0.5px solid rgb(194, 193, 193);
   margin:5px;
 }
 .googlebtn:hover,.fbBtn:hover{
-  transition: 0.5s ease-in-out;
-    transform: scale(1.1);
-    border:0.5px solid rgb(177, 176, 176);
+  border:0.5px solid rgb(150, 149, 149);
 }
 
 .iconimg {
