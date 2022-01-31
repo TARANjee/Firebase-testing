@@ -3,15 +3,14 @@
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.4/firebase-app.js";
 import { getDatabase, ref, set, onValue, update, remove } from "https://www.gstatic.com/firebasejs/9.6.4/firebase-database.js";
-import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, FacebookAuthProvider, linkWithPopup, signOut, GoogleAuthProvider, signInWithPopup } from "https://www.gstatic.com/firebasejs/9.6.4/firebase-auth.js";
+import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, FacebookAuthProvider, onAuthStateChanged, linkWithPopup, signOut, GoogleAuthProvider, signInWithPopup } from "https://www.gstatic.com/firebasejs/9.6.4/firebase-auth.js";
 
 const registerBtn = document.querySelector('.registerBtn');
 const signoutBtn = document.querySelector('#signout');
 const loginBtn = document.querySelector('.loginBtn');
 const googlebtn = document.querySelector('.googlebtn');
 const fbBtn = document.querySelector('.fbBtn');
-const defaultImgUrl='https://e7.pngegg.com/pngimages/1004/160/png-clipart-computer-icons-user-profile-social-web-others-blue-social-media.png';
-
+const defaultImgUrl = 'https://e7.pngegg.com/pngimages/1004/160/png-clipart-computer-icons-user-profile-social-web-others-blue-social-media.png';
 
 var firebaseConfig = {
 
@@ -39,7 +38,7 @@ const auth = getAuth(app);
 //------------------------ Ready Data -----------------------------
 
 let username, email, password;
-let user={};
+let user = {};
 
 //------------------------ Insert Data In Firebase -----------------------------
 if (loginBtn !== null) {
@@ -61,7 +60,6 @@ if (loginBtn !== null) {
                 });
 
                 alert('user is loggedin!!');
-
             })
             .catch((error) => {
                 var errorCode = error.code;
@@ -93,12 +91,11 @@ if (registerBtn !== null) {
                 set(ref(database, 'user/' + user.uid), {
                     username: username,
                     email: email,
-                    userCreatedAt:Date.now(),
-                    photoURL:defaultImgUrl
+                    userCreatedAt: Date.now(),
+                    photoURL: defaultImgUrl
                 });
 
                 alert('user is created!!');
-
             })
             .catch((error) => {
                 var errorCode = error.code;
@@ -138,16 +135,18 @@ const signWithGoogle = async () => {
     //         alert(error)
     //     })
     // } else {
-        await signInWithPopup(auth, provider)
-            .then((res) => {
-                set(ref(database, 'user/' + res.user.uid), {
-                    username: res.user.displayName,
-                    email: res.user.email,
-                    photoURL: res.user.photoURL
-                });
-            }).catch((error) => {
-                alert(error)
-            })
+    await signInWithPopup(auth, provider)
+        .then((res) => {
+            
+            const data=res.user;
+            set(ref(database, 'user/' +data.uid), {
+                username: data.displayName,
+                email: data.email,
+                photoURL:data.photoURL
+            });
+        }).catch((error) => {
+            alert(error)
+        })
     // }
 }
 const signWithFb = async () => {
@@ -165,18 +164,24 @@ const signWithFb = async () => {
     //             alert(error)
     //         })
     // } else {
-        await signInWithPopup(auth, provider)
-            .then((res) => {
-                console.log(res.user)
-            }).catch((error) => {
-                alert(error)
-            })
+    await signInWithPopup(auth, provider)
+        .then((res) => {
+            console.log(res.user)
+            const data=res.user;
+            set(ref(database, 'user/' + data.uid), {
+                username: data.displayName,
+                email:data.email,
+                photoURL: data.photoURL
+            });
+        }).catch((error) => {
+            alert(error)
+        })
     // }
 }
-if(googlebtn !== null)
-googlebtn.addEventListener('click', signWithGoogle);
-if(fbBtn !== null)
-fbBtn.addEventListener('click', signWithFb);
+if (googlebtn !== null)
+    googlebtn.addEventListener('click', signWithGoogle);
+if (fbBtn !== null)
+    fbBtn.addEventListener('click', signWithFb);
 
 
 
@@ -212,15 +217,48 @@ function validate_field(field) {
 
 //------------------------ Select Process -----------------------------
 
-document.getElementById('account').onclick = () => {
-    console.log(user)
-    const selectData = ref(database, 'user/' + user.uid);
-    onValue(selectData, (snapshot) => {
-        const data = snapshot.val(); // data = all data on firebase
-        console.log(data)
-    })
+document.getElementById('account').onclick = async () => {
 
+    await onAuthStateChanged(auth, (user) => {
+        if (user) {
+
+            // User is signed in, see docs for a list of available properties
+            // https://firebase.google.com/docs/reference/js/firebase.User
+            const uid = user.uid;
+
+                const selectData = ref(database, 'user/' + uid);
+                onValue(selectData, (snapshot) => {
+                    const data = snapshot.val(); // data = all data on firebase
+                    document.querySelector('#profilePic').src = data.photoURL?data.photoURL:defaultImgUrl
+                    document.getElementById('username').innerHTML = data.username
+                    document.getElementById('email').innerHTML = data.email
+
+                })
+            
+
+
+            // ...
+        } else {
+            // User is signed out
+            // ...
+            document.getElementById('hide').style.display = 'block';
+            document.getElementById('view').style.display = 'none';
+            console.log("user is signout")
+        }
+    });
 }
+
+document.getElementById('logout').onclick = async () => {
+    signOut(auth).then(() => {
+        // Sign-out successful.
+        alert("logout successful")
+        window.location.href = 'login.htm'
+    }).catch((error) => {
+        // An error happened.
+        alert(error)
+    });
+}
+document.getElementById('hide').style.display = 'none';
 
 
 //------------------------ Delete Process -----------------------------

@@ -60,20 +60,26 @@
     <div id="modal-account" class="modal">
       <div class="modal-content">
         <h4>Account</h4>
-        <div class="col s12 m8 offset-m2 l6 offset-l3">
+        <div  id='view' class="col s12 m8 offset-m2 l6 offset-l3">
           <div class="card-panel grey lighten-5 z-depth-1">
             <div class="row valign-wrapper">
               <div class="col s2">
-                <img src="img/icons8-user-64.png" alt="" class="circle responsive-img"> <!-- notice the "circle" class -->
+                <img id='profilePic' src="img/icons8-user-64.png" alt="" class="circle responsive-img"> <!-- notice the "circle" class -->
               </div>
               <div class="col s10">
                 <span class="black-text">
-                  <div class='valign-wrapper'>Username:<p id='username'>Taranjeet</p> </div>
-                  <div class='valign-wrapper'>Email:<p id='email'>Taranjeet@gmail.com</p> </div>
+                  <div class='valign-wrapper'>Username: <b id='username'>Tj</b> </div>
+                  <div class='valign-wrapper'>Email: <b id='email'>  Tj@gmail.com</b> </div>
                 </span>
               </div>
             </div>
           </div>
+      </div>
+      <div id='hide'>
+        <h5>No User Exist</h5>
+        <div class="modal-footer">
+        <a  class='waves-effect waves-light btn-large' href='login.htm'>Login</a>
+        </div>
       </div>
     </div>
 
